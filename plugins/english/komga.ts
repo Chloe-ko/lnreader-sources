@@ -17,7 +17,7 @@ class Komga implements Plugin.PluginBase {
   name = 'Komga';
   icon = 'src/en/komga/icon.png';
   site = 'https://komga.hibana.me/api/v1';
-  version = '1.0.0';
+  version = '1.0.1';
   headers = {
     'Authorization': this.getBasicAuthHeader(),
   };
