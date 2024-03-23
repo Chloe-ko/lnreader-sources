@@ -15,7 +15,7 @@ class Komga implements Plugin.PluginBase {
   name = 'Komga';
   icon = 'src/en/komga/icon.png';
   site = 'https://komga.hibana.me/api/v1';
-  version = '1.0.1';
+  version = '1.0.2';
   headers = {
     'Authorization': this.getBasicAuthHeader(),
   };
@@ -23,7 +23,7 @@ class Komga implements Plugin.PluginBase {
 
   getBasicAuthHeader() {
     const base64Credentials = `${username}:${password}`;
-    return `Basic ${base64Credentials}`;
+    return `Basic bW91c2UwOTEwQGdtYWlsLmNvbTpDbG9zYWJsZS1Hb25nOS1EdWxsZXI=`;
   }
 
   async popularNovels(
@@ -45,6 +45,8 @@ class Komga implements Plugin.PluginBase {
       { headers: this.headers },
     ).then(r => r.json());
 
+    console.log('Body content', body.content);
+
     return body.content.map(
       (book: { name: string; id: string }): Plugin.NovelItem => ({
         name: book.name,
@@ -60,8 +62,6 @@ class Komga implements Plugin.PluginBase {
       name: 'Untitled',
     };
 
-    console.log('Parsing novel', novelPath);
-
     const bookBody = await fetch(this.site + novelPath, {
       headers: this.headers,
     }).then(r => r.json());
@@ -72,8 +72,6 @@ class Komga implements Plugin.PluginBase {
     // TODO: get here data from the site and
     // un-comment and fill-in the relevant fields
 
-    console.log('Fetched data');
-
     novel.name = bookBody.name;
     // novel.artist = "";
     novel.author = bookBody.metadata.authors
@@ -81,20 +79,17 @@ class Komga implements Plugin.PluginBase {
           .map((author: { name: string }) => author.name)
           .join(', ')
       : '';
-    console.log('Bruh');
     novel.cover = `${this.site}/books/${bookBody.id}/thumbnail`;
     novel.genres = seriesBody.metadata.genres.join(', ');
     novel.status = NovelStatus.Completed;
     novel.summary = seriesBody.metadata.summary;
-
-    console.log('Fetching epub');
 
     const chaptersBody = await fetch(
       this.site + `/books/${bookBody.id}/manifest/epub`,
       { headers: this.headers },
     ).then(r => r.json());
 
-    console.log(chaptersBody);
+    console.log('Reading order', chaptersBody.readingOrder);
 
     let chapters = chaptersBody.readingOrder.map(
       (chapter: { href: string }, index: number): Plugin.ChapterItem => {
@@ -160,6 +155,8 @@ class Komga implements Plugin.PluginBase {
       { headers: this.headers },
     ).then(r => r.json());
 
+    console.log('Searching body', body.content);
+
     return body.content.map(
       (book: { name: string; id: string }): Plugin.NovelItem => ({
         name: book.name,
@@ -172,6 +169,7 @@ class Komga implements Plugin.PluginBase {
   async fetchImage(url: string): Promise<string | undefined> {
     // if your plugin has images and they won't load
     // this is the function to fiddle with
+    console.log('Fetching image', url);
 
     return await fetchFile(url, { headers: this.headers });
   }
