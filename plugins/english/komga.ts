@@ -6,8 +6,6 @@ import { defaultCover } from '@libs/defaultCover';
 import { NovelStatus } from '@libs/novelStatus';
 // import { isUrlAbsolute } from "@libs/isAbsoluteUrl";
 // import { parseMadaraDate } from "@libs/parseMadaraDate";
-import { AsyncLocalStorage } from 'async_hooks';
-import { parseHTML } from 'jquery';
 
 const username = 'bW91c2UwOTEwQGdtYWlsLmNvbQoK';
 const password = 'Q2xvc2FibGUtR29uZzktRHVsbGVy';
